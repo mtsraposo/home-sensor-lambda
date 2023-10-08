@@ -1,7 +1,9 @@
 #!/bin/zsh
 
-aws lambda create-function --function-name handlePresence \
---runtime provided.al2 --handler bootstrap \
+aws lambda create-function \
+--function-name handlePresence \
+--runtime go1.x \
+--handler main \
 --architectures arm64 \
 --role "$LAMBDA_EXECUTION_ROLE_ARN" \
 --zip-file fileb://handlePresence.zip

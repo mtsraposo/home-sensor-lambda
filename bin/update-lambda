@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+aws lambda update-function-code \
+--function-name handlePresence \
+--zip-file fileb://handlePresence.zip
