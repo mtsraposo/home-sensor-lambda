@@ -23,7 +23,7 @@ func Get(url string, client Client) (string, error) {
 	if responseError != nil {
 		return "", responseError
 	}
-	statusCodeError := handleStatusCode(response, err, url)
+	statusCodeError := handleStatusCode(response, url)
 	if statusCodeError != nil {
 		return "", statusCodeError
 	}
@@ -50,11 +50,11 @@ func handleResponseError(response *http.Response, err error, url string) error {
 	return nil
 }
 
-func handleStatusCode(response *http.Response, err error, url string) error {
+func handleStatusCode(response *http.Response, url string) error {
 	if response.StatusCode != http.StatusOK {
-		err = errors.New("received non-OK HTTP status: " + response.Status)
-		log.Printf("Request to %s failed: %v", url, err)
-		return err
+		statusCodeError := errors.New("received non-OK HTTP status: " + response.Status)
+		log.Printf("Request to %s failed: %v", url, statusCodeError)
+		return statusCodeError
 	}
 	return nil
 }
