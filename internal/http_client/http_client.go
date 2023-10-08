@@ -7,13 +7,9 @@ import (
 	"net/http"
 )
 
-type Client interface {
-	Get(url string) (*http.Response, error)
-}
+type HttpClient struct{}
 
-type ClientImplementation struct{}
-
-func (c *ClientImplementation) Get(url string) (*http.Response, error) {
+func (c *HttpClient) Get(url string) (*http.Response, error) {
 	return http.Get(url)
 }
 
@@ -41,12 +37,6 @@ func handleResponseError(response *http.Response, err error, url string) error {
 		log.Printf("Failed to make a request to %s: %v", url, err)
 		return err
 	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Print("Response body closed.")
-		}
-	}(response.Body)
 	return nil
 }
 
@@ -65,5 +55,11 @@ func readBody(response *http.Response) (string, error) {
 		log.Printf("Failed to read response body: %v", err)
 		return "", err
 	}
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Print("Response body closed.")
+		}
+	}(response.Body)
 	return string(bodyBytes), nil
 }

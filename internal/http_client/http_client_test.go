@@ -2,30 +2,12 @@ package http_client_test
 
 import (
 	"home_sensor_lambda/internal/http_client"
-	"io"
-	"net/http"
-	"strings"
+	"home_sensor_lambda/test/mocks"
 	"testing"
 )
 
-type MockClient struct {
-	MockGet func(url string) (*http.Response, error)
-}
-
-func (c *MockClient) Get(url string) (*http.Response, error) {
-	return c.MockGet(url)
-}
-
 func TestMakeRequest(t *testing.T) {
-	mockClient := &MockClient{
-		MockGet: func(url string) (*http.Response, error) {
-			return &http.Response{
-				StatusCode: http.StatusOK,
-				Body:       io.NopCloser(strings.NewReader(`OK`)),
-			}, nil
-		},
-	}
-
+	mockClient := mocks.GetSuccess()
 	body, err := http_client.Get("https://example.com", mockClient)
 
 	if err != nil {
