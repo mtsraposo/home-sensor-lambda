@@ -1,0 +1,6 @@
+#!/bin/zsh
+
+set -e
+
+GOOS=linux GOARCH=amd64 go build -tags lambda.norpc -o bootstrap cmd/home_sensor_lambda/main.go
+zip handlePresence.zip bootstrap
