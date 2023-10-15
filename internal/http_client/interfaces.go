@@ -2,6 +2,6 @@ package http_client
 
 import "net/http"
 
-type Client interface {
+type HttpClientInterface interface {
 	Get(url string) (*http.Response, error)
 }

@@ -13,7 +13,7 @@ func (c *HttpClient) Get(url string) (*http.Response, error) {
 	return http.Get(url)
 }
 
-func Get(url string, client Client) (string, error) {
+func Get(url string, client HttpClientInterface) (string, error) {
 	response, err := client.Get(url)
 	responseError := handleResponseError(response, err, url)
 	if responseError != nil {

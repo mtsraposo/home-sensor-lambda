@@ -7,7 +7,7 @@ import (
 )
 
 func TestMakeRequest(t *testing.T) {
-	mockClient := mocks.GetSuccess()
+	mockClient := mocks.HttpGetSuccess()
 	body, err := http_client.Get("https://example.com", mockClient)
 
 	if err != nil {

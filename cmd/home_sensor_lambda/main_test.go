@@ -9,13 +9,13 @@ import (
 )
 
 func TestProcess(t *testing.T) {
-	mockClient := mocks.GetSuccess()
+	mockSnsPublisher := mocks.SnsManagerSuccess()
 	request := main.Request{
 		Headers: map[string]string{
 			"X-Timestamp": time.Now().String(),
 		},
 	}
-	statusCode, body, err := main.Process(request, mockClient)
+	statusCode, body, err := main.Process(request, mockSnsPublisher)
 
 	if statusCode != 200 {
 		t.Fatalf("expected 200, got %d", statusCode)

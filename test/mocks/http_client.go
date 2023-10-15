@@ -6,16 +6,16 @@ import (
 	"strings"
 )
 
-type MockClient struct {
+type MockHttpClient struct {
 	MockGet func(url string) (*http.Response, error)
 }
 
-func (c *MockClient) Get(url string) (*http.Response, error) {
+func (c *MockHttpClient) Get(url string) (*http.Response, error) {
 	return c.MockGet(url)
 }
 
-func GetSuccess() *MockClient {
-	return &MockClient{
+func HttpGetSuccess() *MockHttpClient {
+	return &MockHttpClient{
 		MockGet: func(url string) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: http.StatusOK,

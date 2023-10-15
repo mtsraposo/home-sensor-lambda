@@ -5,31 +5,35 @@ import (
 	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"home_sensor_lambda/internal/http_client"
+	"home_sensor_lambda/internal/sns_client"
 	"home_sensor_lambda/pkg/config"
 	"log"
 )
 
 type Request events.APIGatewayProxyRequest
 
-func Process(request Request, httpClient http_client.Client) (int, string, error) {
+func Process(request Request, snsManager sns_client.SnsManager) (int, string, error) {
 	timestamp := request.Headers["X-Timestamp"]
 	fmt.Printf("Received timestamp: %s\n", timestamp)
-	appConfig, err := config.Load()
-	if err != nil {
-		log.Fatalf("Failed to load configuration: %v", err)
+	appConfig, configLoadError := config.Load()
+	if configLoadError != nil {
+		log.Fatalf("Failed to load configuration: %v", configLoadError)
 	}
-	body, err := http_client.Get(appConfig.GithubUrl, httpClient)
-	if err != nil {
-		err := fmt.Errorf("request error: %v", err)
-		fmt.Println(err)
-		return 500, "", err
+	publishPayload := sns_client.SnsPublishPayload{
+		AwsRegion: appConfig.AwsRegion,
+		Message:   timestamp,
+		TopicArn:  appConfig.SnsTopicArn,
 	}
-	return 200, body, nil
+	publishError := sns_client.Publish(snsManager, publishPayload)
+	if publishError != nil {
+		fmt.Println(fmt.Errorf("request error: %v", publishError))
+		return 500, "", publishError
+	}
+	return 200, "OK", nil
 }
 func HandleRequest(_ctx context.Context, request Request) (events.APIGatewayProxyResponse, error) {
-	httpClient := &http_client.HttpClient{}
-	statusCode, body, _ := Process(request, httpClient)
+	snsManager := &sns_client.SnsBasicManager{}
+	statusCode, body, _ := Process(request, snsManager)
 	return events.APIGatewayProxyResponse{
 		StatusCode: statusCode,
 		Body:       body,

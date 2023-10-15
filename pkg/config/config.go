@@ -6,7 +6,9 @@ import (
 )
 
 type Config struct {
-	GithubUrl string
+	AwsRegion   string
+	GithubUrl   string
+	SnsTopicArn string
 }
 
 func Load() (*Config, error) {
@@ -28,16 +30,22 @@ func Load() (*Config, error) {
 }
 
 func DevConfig() (*Config, error) {
+	awsRegion := os.Getenv("AWS_REGION")
 	githubUrl := os.Getenv("GITHUB_URL")
-	return &Config{GithubUrl: githubUrl}, nil
+	snsTopicArn := os.Getenv("SNS_TOPIC_ARN")
+	return &Config{AwsRegion: awsRegion, GithubUrl: githubUrl, SnsTopicArn: snsTopicArn}, nil
 }
 
 func TestConfig() (*Config, error) {
+	awsRegion := os.Getenv("AWS_REGION")
 	githubUrl := os.Getenv("GITHUB_URL")
-	return &Config{GithubUrl: githubUrl}, nil
+	snsTopicArn := os.Getenv("SNS_TOPIC_ARN")
+	return &Config{AwsRegion: awsRegion, GithubUrl: githubUrl, SnsTopicArn: snsTopicArn}, nil
 }
 
 func ProdConfig() (*Config, error) {
+	awsRegion := os.Getenv("AWS_REGION")
 	githubUrl := os.Getenv("GITHUB_URL")
-	return &Config{GithubUrl: githubUrl}, nil
+	snsTopicArn := os.Getenv("SNS_TOPIC_ARN")
+	return &Config{AwsRegion: awsRegion, GithubUrl: githubUrl, SnsTopicArn: snsTopicArn}, nil
 }
